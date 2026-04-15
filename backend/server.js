@@ -1,13 +1,22 @@
-﻿const express = require("express");
+const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
 const connectDB = require("./config/db");
+const { initSqlite } = require("./config/sqlite");
 const authRoutes = require("./routes/authRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 
 dotenv.config();
 connectDB();
+
+try {
+  const sqliteState = initSqlite();
+  console.log(`SQLite connected: ${sqliteState.path}`);
+} catch (error) {
+  console.error("SQLite initialization failed:", error.message);
+  process.exit(1);
+}
 
 const app = express();
 
