@@ -6,10 +6,19 @@ const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_PREFIXES = ["data:image/png;base64,", "data:image/jpeg;base64,"];
 
 const GAZE_API_BASE_URL = process.env.GAZE_API_BASE_URL || "https://ah-freak-gaze-detection-api.hf.space";
+const GAZE_API_KEY = (process.env.GAZE_API_KEY || process.env.HF_TOKEN || "").trim();
 const GAZE_API_TIMEOUT_MS = Number(process.env.GAZE_API_TIMEOUT_MS || 30000);
 const GAZE_API_RETRY_COUNT = Math.max(0, Number(process.env.GAZE_API_RETRY_COUNT || 1));
 const GAZE_H_THRESHOLD = String(process.env.GAZE_API_H_THRESH || "0.12");
 const GAZE_V_THRESHOLD = String(process.env.GAZE_API_V_THRESH || "0.10");
+
+function getGazeApiHeaders() {
+  const headers = { Accept: "application/json" };
+  if (GAZE_API_KEY) {
+    headers.Authorization = `Bearer ${GAZE_API_KEY}`;
+  }
+  return headers;
+}
 
 const USER_INPUT_ERROR_CODES = new Set(["NO_FACE_DETECTED", "EYES_NOT_DETECTED", "INVALID_THRESHOLD"]);
 
@@ -159,9 +168,7 @@ async function ensureGazeApiHealthy() {
   const healthPayload = await requestWithRetry(() =>
     fetchJsonWithTimeout(`${GAZE_API_BASE_URL}/health`, {
       method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
+      headers: getGazeApiHeaders(),
     })
   );
 
@@ -192,9 +199,7 @@ async function callGazePredictAPI({ imageBuffer, fileName, mimeType }) {
     fetchJsonWithTimeout(`${GAZE_API_BASE_URL}/predict`, {
       method: "POST",
       body: formData,
-      headers: {
-        Accept: "application/json",
-      },
+      headers: getGazeApiHeaders(),
     })
   );
 }

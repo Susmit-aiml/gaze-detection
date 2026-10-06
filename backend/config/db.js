@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const dns = require("dns");
 
 const connectDB = async () => {
   const mongoURI = process.env.MONGO_URI;
@@ -6,6 +7,14 @@ const connectDB = async () => {
   if (!mongoURI) {
     console.error("MONGO_URI is missing in backend/.env");
     process.exit(1);
+  }
+
+  if (mongoURI.includes("mongodb+srv://")) {
+    try {
+      dns.setServers(["8.8.8.8", "1.1.1.1"]);
+    } catch (_) {
+      // Ignore if cannot set custom DNS
+    }
   }
 
   try {

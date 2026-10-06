@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Environment files (never commit private credentials)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+
+# SQLite database files
+sqlite-data/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
