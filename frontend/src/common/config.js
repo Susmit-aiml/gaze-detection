@@ -1,7 +1,21 @@
-export const API_BASE_URL =
-  window.__GAZE_API_BASE_URL__ ||
-  import.meta.env.VITE_API_BASE_URL ||
-  "http://localhost:5000/api";
+export function getApiBaseUrl() {
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("GAZE_API_BASE_URL");
+    if (saved && saved.trim()) {
+      return saved.trim().replace(/\/+$/, "");
+    }
+    if (window.__GAZE_API_BASE_URL__) {
+      return String(window.__GAZE_API_BASE_URL__).trim().replace(/\/+$/, "");
+    }
+  }
+  const envUrl = (import.meta.env.VITE_API_BASE_URL || "").trim().replace(/\/+$/, "");
+  if (envUrl) {
+    return envUrl;
+  }
+  return "http://localhost:5000/api";
+}
+
+export const API_BASE_URL = getApiBaseUrl();
 
 const isStaticHosting =
   typeof window !== "undefined" &&

@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { API_BASE_URL, ROUTES } from "../common/config";
 import { redirectTo } from "../common/auth";
 
@@ -53,7 +53,11 @@ export default function RegisterApp() {
       setSuccess("Registration successful. Redirecting to login...");
       window.setTimeout(() => redirectTo(ROUTES.login), 1200);
     } catch (submitError) {
-      setError("Unable to reach backend. Check if API is running on port 5000.");
+      if (typeof window !== "undefined" && window.location.protocol === "https:" && API_BASE_URL.startsWith("http://")) {
+        setError("Cannot connect to HTTP backend from HTTPS. Please set your live Render backend URL.");
+      } else {
+        setError("Unable to reach backend. Check your backend server URL.");
+      }
     } finally {
       setLoading(false);
     }
@@ -120,9 +124,39 @@ export default function RegisterApp() {
               />
             </div>
 
-            <p id="errorMessage" className="message error" role="alert">
-              {error}
-            </p>
+            {error ? (
+              <div id="errorMessage" className="message error" role="alert" style={{ textAlign: "center" }}>
+                <div>{error}</div>
+                <button
+                  type="button"
+                  style={{
+                    display: "inline-block",
+                    marginTop: "8px",
+                    background: "#0068cc",
+                    color: "#ffffff",
+                    border: "none",
+                    borderRadius: "6px",
+                    padding: "6px 12px",
+                    cursor: "pointer",
+                    fontSize: "0.85rem",
+                    fontWeight: "600",
+                  }}
+                  onClick={() => {
+                    const current = localStorage.getItem("GAZE_API_BASE_URL") || "";
+                    const input = window.prompt(
+                      "Enter your live Render backend URL (e.g. https://your-backend.onrender.com/api):",
+                      current || "https://"
+                    );
+                    if (input !== null && input.trim()) {
+                      localStorage.setItem("GAZE_API_BASE_URL", input.trim().replace(/\/+$/, ""));
+                      window.location.reload();
+                    }
+                  }}
+                >
+                  ⚙️ Configure Backend URL
+                </button>
+              </div>
+            ) : null}
             <p id="successMessage" className="message success" role="status">
               {success}
             </p>
