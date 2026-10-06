@@ -1,4 +1,4 @@
-﻿import { defineConfig } from "vite";
+import { defineConfig } from "vite";
 import { resolve } from "node:path";
 
 function htmlShell(title, entryModule) {
@@ -75,6 +75,7 @@ function noHtmlFilesPlugin() {
 }
 
 export default defineConfig({
+  base: "./",
   plugins: [noHtmlFilesPlugin()],
   server: {
     port: 5173,
@@ -87,13 +88,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        login: resolve(__dirname, "js/login.js"),
-        register: resolve(__dirname, "js/register.js"),
-        dashboard: resolve(__dirname, "js/dashboard.js"),
-        admin: resolve(__dirname, "js/admin.js"),
-      },
-      output: {
-        entryFileNames: "assets/[name].js",
+        index: resolve(__dirname, "index.html"),
+        login: resolve(__dirname, "login.html"),
+        register: resolve(__dirname, "register.html"),
+        dashboard: resolve(__dirname, "dashboard.html"),
+        admin: resolve(__dirname, "admin.html"),
+        fallback: resolve(__dirname, "404.html"),
       },
     },
   },

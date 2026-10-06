@@ -3,13 +3,18 @@ export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   "http://localhost:5000/api";
 
+const isStaticHosting =
+  typeof window !== "undefined" &&
+  (window.location.pathname.endsWith(".html") ||
+    window.location.hostname.endsWith("github.io"));
+
 const configuredRoutes = window.__GAZE_ROUTES__ || {};
 
 export const ROUTES = {
-  login: configuredRoutes.login || "/login",
-  register: configuredRoutes.register || "/register",
-  dashboard: configuredRoutes.dashboard || "/dashboard",
-  admin: configuredRoutes.admin || "/admin",
+  login: configuredRoutes.login || (isStaticHosting ? "./login.html" : "/login"),
+  register: configuredRoutes.register || (isStaticHosting ? "./register.html" : "/register"),
+  dashboard: configuredRoutes.dashboard || (isStaticHosting ? "./dashboard.html" : "/dashboard"),
+  admin: configuredRoutes.admin || (isStaticHosting ? "./admin.html" : "/admin"),
 };
 
 export const STORAGE_KEYS = {
