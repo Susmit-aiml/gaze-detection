@@ -1,4 +1,7 @@
-﻿export const API_BASE_URL = window.__GAZE_API_BASE_URL__ || "http://localhost:5000/api";
+export const API_BASE_URL =
+  window.__GAZE_API_BASE_URL__ ||
+  import.meta.env.VITE_API_BASE_URL ||
+  "http://localhost:5000/api";
 
 const configuredRoutes = window.__GAZE_ROUTES__ || {};
 
