@@ -1,18 +1,25 @@
 export function getApiBaseUrl() {
+  let url = "";
   if (typeof window !== "undefined") {
     const saved = localStorage.getItem("GAZE_API_BASE_URL");
     if (saved && saved.trim()) {
-      return saved.trim().replace(/\/+$/, "");
-    }
-    if (window.__GAZE_API_BASE_URL__) {
-      return String(window.__GAZE_API_BASE_URL__).trim().replace(/\/+$/, "");
+      url = saved.trim().replace(/\/+$/, "");
+    } else if (window.__GAZE_API_BASE_URL__) {
+      url = String(window.__GAZE_API_BASE_URL__).trim().replace(/\/+$/, "");
     }
   }
-  const envUrl = (import.meta.env.VITE_API_BASE_URL || "").trim().replace(/\/+$/, "");
-  if (envUrl) {
-    return envUrl;
+  if (!url) {
+    const envUrl = (import.meta.env.VITE_API_BASE_URL || "").trim().replace(/\/+$/, "");
+    if (envUrl) {
+      url = envUrl;
+    } else {
+      return "http://localhost:5000/api";
+    }
   }
-  return "http://localhost:5000/api";
+  if (url && !url.endsWith("/api")) {
+    url = `${url}/api`;
+  }
+  return url;
 }
 
 export const API_BASE_URL = getApiBaseUrl();

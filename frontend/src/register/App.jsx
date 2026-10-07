@@ -148,7 +148,11 @@ export default function RegisterApp() {
                       current || "https://"
                     );
                     if (input !== null && input.trim()) {
-                      localStorage.setItem("GAZE_API_BASE_URL", input.trim().replace(/\/+$/, ""));
+                      let clean = input.trim().replace(/\/+$/, "");
+                      if (!clean.endsWith("/api")) {
+                        clean = `${clean}/api`;
+                      }
+                      localStorage.setItem("GAZE_API_BASE_URL", clean);
                       window.location.reload();
                     }
                   }}
